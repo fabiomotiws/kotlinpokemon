@@ -49,7 +49,7 @@ val appModule =
             PokemonRepositoryImpl(api = get())
         }
 
-        // ViewModel
+        // ViewModels
         viewModel {
             PokemonListViewModel(repository = get())
         }

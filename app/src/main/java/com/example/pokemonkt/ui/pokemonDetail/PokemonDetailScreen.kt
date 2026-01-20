@@ -62,7 +62,6 @@ fun PokemonDetailScreen(
                 Text(text = state.errorMessage, color = MaterialTheme.colorScheme.error)
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = "Voltar", modifier = Modifier.padding(8.dp))
-                // se quiser, pode trocar por Button depois
             }
         }
 
@@ -76,7 +75,6 @@ fun PokemonDetailScreen(
                 Text(
                     text = "Voltar",
                     modifier = Modifier.padding(bottom = 12.dp)
-                    // pode trocar por IconButton depois
                 )
 
                 AsyncImage(
