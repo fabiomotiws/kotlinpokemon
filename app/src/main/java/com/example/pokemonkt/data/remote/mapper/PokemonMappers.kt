@@ -13,7 +13,7 @@ fun NamedApiResourceDto.toPokemonListItem(): PokemonListItem {
 
     return PokemonListItem(
         id = id,
-        name = name,
+        name = name.capitalizeFirst(),
         imageUrl = "$OFFICIAL_ARTWORK_BASE/$id.png",
     )
 }
@@ -24,3 +24,7 @@ private fun extractPokemonId(url: String): Int {
 
     return idStr.toInt()
 }
+
+fun String.capitalizeFirst(): String =
+    replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+

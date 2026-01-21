@@ -6,7 +6,7 @@ import com.example.pokemonkt.domain.model.PokemonDetail
 fun PokemonDetailDto.toPokemonDetail(): PokemonDetail {
     return PokemonDetail(
         id = id,
-        name = name,
+        name = name.capitalizeFirst(),
         height = height,
         weight = weight,
         imageUrl = sprites.frontDefault
