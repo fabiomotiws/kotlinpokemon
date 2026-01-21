@@ -11,5 +11,15 @@ data class PokemonDetailDto(
 )
 
 data class PokemonSpritesDto(
+    @SerializedName("front_default") val frontDefault: String?,
+    @SerializedName("other") val other: PokemonOtherSpritesDto?
+)
+
+data class PokemonOtherSpritesDto(
+    @SerializedName("showdown") val showdown: PokemonShowdownSpritesDto?
+)
+
+data class PokemonShowdownSpritesDto(
     @SerializedName("front_default") val frontDefault: String?
 )
+
