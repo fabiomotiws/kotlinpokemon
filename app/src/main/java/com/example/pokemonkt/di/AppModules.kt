@@ -9,6 +9,7 @@ import com.example.pokemonkt.data.repository.PokemonRepositoryImpl
 import com.example.pokemonkt.domain.repository.PokemonRepository
 import com.example.pokemonkt.ui.pokemonDetail.PokemonDetailViewModel
 import com.example.pokemonkt.ui.pokemonList.PokemonListViewModel
+import com.example.pokemonkt.ui.test.TestViewModel
 import com.example.pokemonkt.utils.constants.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -76,4 +77,6 @@ val appModule =
         viewModel {
             PokemonDetailViewModel(repository = get())
         }
+
+        viewModel { TestViewModel() }
     }

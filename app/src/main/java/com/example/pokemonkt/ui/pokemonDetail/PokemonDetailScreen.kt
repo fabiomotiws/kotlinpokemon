@@ -1,5 +1,6 @@
 package com.example.pokemonkt.ui.pokemonDetail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +45,8 @@ import kotlin.math.roundToInt
 fun PokemonDetailRoute(
     pokemonName: String,
     onBack: () -> Unit,
-    viewModel: PokemonDetailViewModel = koinViewModel()
+    viewModel: PokemonDetailViewModel = koinViewModel(),
+    onGoToTest: () -> Unit
 ) {
     LaunchedEffect(pokemonName) {
         viewModel.load(pokemonName)
@@ -53,7 +55,8 @@ fun PokemonDetailRoute(
     PokemonDetailScreen(
         state = viewModel.uiState,
         onBack = onBack,
-        onRetry = { viewModel.load(pokemonName) }
+        onRetry = { viewModel.load(pokemonName) },
+        onGoToTest = onGoToTest
     )
 }
 
@@ -62,7 +65,8 @@ fun PokemonDetailRoute(
 fun PokemonDetailScreen(
     state: PokemonDetailUiState,
     onBack: () -> Unit,
-    onRetry: (() -> Unit)? = null
+    onRetry: (() -> Unit)? = null,
+    onGoToTest: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -100,7 +104,8 @@ fun PokemonDetailScreen(
                         .padding(padding)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    onGoToTest = onGoToTest
                 )
             }
         }
@@ -153,7 +158,8 @@ private fun ErrorDetail(
 @Composable
 private fun DetailContent(
     pokemon: PokemonDetail,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onGoToTest: () -> Unit
 ) {
     val imageLoader: ImageLoader = koinInject()
     Column(modifier = modifier) {
@@ -186,8 +192,9 @@ private fun DetailContent(
         Spacer(Modifier.height(16.dp))
 
         Text(
+            modifier = Modifier.clickable{onGoToTest()},
             text = "Sobre",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(Modifier.height(8.dp))
 

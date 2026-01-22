@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pokemonkt.ui.pokemonDetail.PokemonDetailRoute
 import com.example.pokemonkt.ui.pokemonList.PokemonListRoute
+import com.example.pokemonkt.ui.test.TestRoute
 
 
 @Composable
@@ -35,8 +36,13 @@ fun AppNavGraph() {
 
                 PokemonDetailRoute(
                 pokemonName = name,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onGoToTest = { navController.navigate(Routes.TEST)}
         )
+        }
+
+        composable (Routes.TEST){
+            TestRoute()
         }
     }
 }
