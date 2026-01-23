@@ -5,5 +5,6 @@ data class PokemonDetail(
     val name: String,
     val height: Int,
     val weight: Int,
-    val imageUrl: String?
+    val artworkUrl: String,
+    val showdownGifUrl: String?
 )
