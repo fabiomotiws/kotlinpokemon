@@ -1,5 +1,6 @@
 package com.example.pokemonkt.ui.pokemonDetail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pokemonkt.ui.pokemonDetail.components.DetailContent
@@ -48,12 +53,26 @@ fun PokemonDetailScreen(
     onRetry: (() -> Unit)? = null,
     onGoToTest: () -> Unit
 ) {
+    var backEnabled by remember { mutableStateOf(true) }
+
+    BackHandler(enabled = true) {
+        if (backEnabled) {
+            backEnabled = false
+            onBack()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Detalhes") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        enabled = backEnabled,
+                        onClick = {
+                            backEnabled = false
+                            onBack()
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar"

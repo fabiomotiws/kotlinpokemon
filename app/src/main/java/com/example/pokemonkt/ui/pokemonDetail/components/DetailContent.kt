@@ -66,7 +66,6 @@ fun DetailContent(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                // Botão (toggle) no topo direito
                 IconButton(
                     onClick = { if (hasGif) showGif = !showGif },
                     enabled = hasGif,
@@ -124,7 +123,6 @@ fun DetailContent(
                                 }
 
                                 is coil.compose.AsyncImagePainter.State.Error -> {
-                                    // fallback simples: mostra texto ou ícone
                                     Box(
                                         modifier = Modifier.fillMaxSize(),
                                         contentAlignment = Alignment.Center
