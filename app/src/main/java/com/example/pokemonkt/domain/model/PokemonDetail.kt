@@ -1,0 +1,10 @@
+package com.example.pokemonkt.domain.model
+
+data class PokemonDetail(
+    val id: Int,
+    val name: String,
+    val height: Int,
+    val weight: Int,
+    val artworkUrl: String,
+    val showdownGifUrl: String?
+)
