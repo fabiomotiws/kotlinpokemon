@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -23,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,6 +40,7 @@ import coil.compose.AsyncImage
 import com.example.pokemonkt.R
 import com.example.pokemonkt.domain.model.PokemonListItem
 import org.koin.androidx.compose.koinViewModel
+import java.util.Locale
 
 @Composable
 fun PokemonListRoute(
@@ -44,9 +48,13 @@ fun PokemonListRoute(
     viewModel: PokemonListViewModel = koinViewModel(),
 ) {
     val state = viewModel.uiState
+    val items = viewModel.visibleItems
 
     PokemonListScreen(
         state = state,
+        items = items,
+        onQueryChange = viewModel::onQueryChange,
+        onClearQuery = viewModel::clearQuery,
         onRetry = { viewModel.loadPokemon() },
         onPokemonClick = onPokemonClick,
     )
@@ -56,39 +64,41 @@ fun PokemonListRoute(
 @Composable
 fun PokemonListScreen(
     state: PokemonListUiState,
+    items: List<PokemonListItem>,
+    onQueryChange: (String) -> Unit,
+    onClearQuery: () -> Unit,
     onRetry: () -> Unit,
-    onPokemonClick: (PokemonListItem) -> Unit
+    onPokemonClick: (PokemonListItem) -> Unit,
 ) {
     Scaffold(
         topBar = { PokedexTopBar(onRefresh = onRetry)
         }
     ) { padding ->
-        when {
-            state.isLoading -> {
-                LoadingState(modifier = Modifier.padding(padding))
-            }
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            SearchBar(
+                query = state.query,
+                onQueryChange = onQueryChange,
+                onClear = onClearQuery,
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth()
+            )
 
-            state.errorMessage != null -> {
-                ErrorState(
-                    message = state.errorMessage,
-                    onRetry = onRetry,
-                    modifier = Modifier.padding(padding)
-                )
-            }
-
-            else -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentPadding = PaddingValues(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    items(state.items, key = { it.id }) { pokemon ->
-                        PokemonCard(
-                            pokemon = pokemon,
-                            onClick = { onPokemonClick(pokemon) }
-                        )
+            when {
+                state.isLoading -> LoadingState(modifier = Modifier.fillMaxSize())
+                state.errorMessage != null -> ErrorState(message = state.errorMessage, onRetry = onRetry)
+                else -> {
+                    LazyColumn(
+                        contentPadding = PaddingValues(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(items, key = { it.id }) { pokemon ->
+                            PokemonCard(pokemon = pokemon, onClick = { onPokemonClick(pokemon) })
+                        }
                     }
                 }
             }
@@ -186,6 +196,10 @@ private fun PokemonCard(
                     text = pokemon.name,
                     style = MaterialTheme.typography.titleMedium
                 )
+                Text(
+                    text = String.format(Locale.US, "%04d", pokemon.id),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
             Icon(modifier = Modifier.padding(end = 10.dp),
@@ -195,4 +209,27 @@ private fun PokemonCard(
             )
         }
     }
+}
+
+@Composable
+private fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier,
+        singleLine = true,
+        placeholder = { Text("Buscar por nome…") },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClear) {
+                    Icon(Icons.Default.Close, contentDescription = "Limpar")
+                }
+            }
+        }
+    )
 }
