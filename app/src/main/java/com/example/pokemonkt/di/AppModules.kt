@@ -1,9 +1,11 @@
 package com.example.pokemonkt.di
 
 import android.os.Build.VERSION.SDK_INT
+import androidx.room.Room
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.example.pokemonkt.data.local.AppDatabase
 import com.example.pokemonkt.data.remote.PokeApiService
 import com.example.pokemonkt.data.repository.PokemonRepositoryImpl
 import com.example.pokemonkt.domain.repository.PokemonRepository
@@ -64,9 +66,20 @@ val appModule =
                 .build()
         }
 
+        //Room
+        single {
+            Room.inMemoryDatabaseBuilder(
+                get(),
+                AppDatabase::class.java
+            ).build()
+        }
+
+        // Room database
+        single { get<AppDatabase>().pokemonDao()}
+
         // Repository
         single<PokemonRepository> {
-            PokemonRepositoryImpl(api = get())
+            PokemonRepositoryImpl(api = get(), dao = get())
         }
 
         // ViewModels

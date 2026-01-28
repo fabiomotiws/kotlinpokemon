@@ -16,7 +16,12 @@ class PokemonListViewModel(
         private set
 
     init {
-        loadPokemon()
+        viewModelScope.launch {
+            uiState = uiState.copy(isLoading = true)
+            repository.ensurePokemonCache()
+            val page = repository.getPokemonListPage(20, 0)
+            uiState = uiState.copy(isLoading = false, items = page)
+        }
     }
 
     fun loadPokemon(
@@ -44,8 +49,15 @@ class PokemonListViewModel(
         }
     }
 
-    fun onQueryChange(newQuery: String){
+    fun onQueryChange(newQuery: String) {
         uiState = uiState.copy(query = newQuery)
+        viewModelScope.launch {
+            uiState = if (newQuery.isBlank()) {
+                uiState.copy(items = repository.getPokemonListPage(20, 0))
+            } else {
+                uiState.copy(items = repository.searchPokemonByName(newQuery))
+            }
+        }
     }
 
     fun clearQuery() {

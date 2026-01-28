@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.3.3"
 }
 
 android {
@@ -38,6 +39,14 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.androidx.room.runtime)
+    // Use ksp for annotation processing
+    ksp(libs.androidx.room.compiler)
+
+    // Optional: for Kotlin extensions and Coroutines support
+    implementation(libs.androidx.room.ktx)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
